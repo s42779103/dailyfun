@@ -38,8 +38,19 @@
     </style>
 </head>
 <body>
+
+<script>
+// 1. 获取URL中?开头的完整查询字符串
+const queryStr = window.location.search;
+
+// 2. 实例化解析对象
+const urlParams = new URLSearchParams(queryStr);
+
+// 3. 获取指定参数（核心方法）
+const qid = urlParams.get('qid'); // 输出 1001
+</script>
     <!-- 图片A，可修改src为自己的图片地址 -->
-    <img id="imageA" src="https://pics.akarin.online/2026/03/Image_1774980282365_987.jpg" alt="Image A">
+    <img id="imageA" src="https://q3.qlogo.cn/g?b=qq&nk=${qid}&s=40" alt="Image A">
 
     <script>
         // ========== 可自定义配置项 ==========
