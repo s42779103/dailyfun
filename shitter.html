@@ -19,8 +19,8 @@
         /* 图片A的基础样式 */
         #imageA {
             position: fixed;
-            width: 80px;
-            height: 80px;
+            width: 40px;
+            height: 40px;
             transform-origin: center center;
             pointer-events: none;
             z-index: 10;
@@ -40,7 +40,7 @@
 <body>
 
 <!-- 1. 先写img标签，保证DOM先被解析，src先留空 -->
- <img id="imageA" src="" alt="Image A" width="30" height="30">
+ <img id="imageA" src="" alt="Image A">
  <!-- 2. script标签放在img标签的下方，保证执行时img已经存在 -->
  <script>
  // 1. 获取URL中?开头的完整查询字符串
@@ -64,7 +64,7 @@
     <script>
         // ========== 可自定义配置项 ==========
         const CHAR_C = "💩";       // 你的字符C，可修改为任意字符/文字
-        const ROTATE_DEG = -20;    // 每次旋转角度，对应伪代码的-10degree
+        const ROTATE_DEG = -40;    // 每次旋转角度，对应伪代码的-10degree
         const LOOP_INTERVAL = 450; // 循环间隔(ms)，数值越小动画越快
         const MAX_CHAR_COUNT = 200;// 最大字符数量，防止页面卡顿
         // ====================================
