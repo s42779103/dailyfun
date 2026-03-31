@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>随机动画效果</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: #000;
+        }
+        /* 图片A的基础样式 */
+        #imageA {
+            position: fixed;
+            width: 80px;
+            height: 80px;
+            transform-origin: center center;
+            pointer-events: none;
+            z-index: 10;
+        }
+        /* 字符C副本的基础样式 */
+        .char-c {
+            position: fixed;
+            color: #fff;
+            font-size: 24px;
+            font-weight: bold;
+            transform-origin: center center;
+            pointer-events: none;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- 图片A，可修改src为自己的图片地址 -->
+    <img id="imageA" src="https://picsum.photos/80/80" alt="Image A">
+
+    <script>
+        // ========== 可自定义配置项 ==========
+        const CHAR_C = "✨";       // 你的字符C，可修改为任意字符/文字
+        const ROTATE_DEG = -10;    // 每次旋转角度，对应伪代码的-10degree
+        const LOOP_INTERVAL = 150; // 循环间隔(ms)，数值越小动画越快
+        const MAX_CHAR_COUNT = 200;// 最大字符数量，防止页面卡顿
+        // ====================================
+
+        const image = document.getElementById('imageA');
+        let currentRotate = 0; // 累计旋转角度
+        let charList = [];     // 存储生成的字符副本，用于内存管理
+
+        // 等待图片加载完成后启动循环，避免获取尺寸异常
+        image.onload = () => {
+            const imgWidth = image.offsetWidth;
+            const imgHeight = image.offsetHeight;
+            let winWidth = window.innerWidth;
+            let winHeight = window.innerHeight;
+
+            // 替代while(true)的无限循环，用requestAnimationFrame避免阻塞浏览器主线程
+            let lastRunTime = 0;
+            function animationLoop(timestamp) {
+                // 控制循环执行间隔
+                if (timestamp - lastRunTime >= LOOP_INTERVAL) {
+                    lastRunTime = timestamp;
+
+                    // 1. 对应 image.position.random：图片随机定位（不超出屏幕）
+                    const randomLeft = Math.random() * (winWidth - imgWidth);
+                    const randomTop = Math.random() * (winHeight - imgHeight);
+                    image.style.left = `${randomLeft}px`;
+                    image.style.top = `${randomTop}px`;
+
+                    // 2. 对应 image.turn(-10degree)：累计旋转-10度
+                    currentRotate += ROTATE_DEG;
+                    image.style.transform = `rotate(${currentRotate}deg)`;
+
+                    // 3. 对应 show a new copy of C：生成并显示新的字符C副本
+                    const newChar = document.createElement('div');
+                    newChar.className = 'char-c';
+                    newChar.textContent = CHAR_C;
+                    // 字符默认跟随图片位置，也可改为随机位置
+                    newChar.style.left = `${randomLeft}px`;
+                    newChar.style.top = `${randomTop}px`;
+                    // 可选：让字符也跟随图片旋转，不需要可删除下行
+                    newChar.style.transform = `rotate(${currentRotate}deg)`;
+                    
+                    // 添加到页面
+                    document.body.appendChild(newChar);
+                    charList.push(newChar);
+
+                    // 超出最大数量时删除最早的字符，避免页面卡顿崩溃
+                    if (charList.length > MAX_CHAR_COUNT) {
+                        charList.shift().remove();
+                    }
+                }
+
+                // 递归调用实现无限循环
+                requestAnimationFrame(animationLoop);
+            }
+
+            // 启动动画循环
+            requestAnimationFrame(animationLoop);
+        };
+
+        // 窗口大小变化时自动适配屏幕尺寸
+        window.onresize = () => {
+            winWidth = window.innerWidth;
+            winHeight = window.innerHeight;
+        };
+    </script>
+</body>
+</html>
