@@ -39,18 +39,27 @@
 </head>
 <body>
 
-<script>
-// 1. 获取URL中?开头的完整查询字符串
-const queryStr = window.location.search;
-
-// 2. 实例化解析对象
-const urlParams = new URLSearchParams(queryStr);
-
-// 3. 获取指定参数（核心方法）
-const qid = urlParams.get('qid'); // 输出 1001
-</script>
-    <!-- 图片A，可修改src为自己的图片地址 -->
-    <img id="imageA" src="https://q3.qlogo.cn/g?b=qq&nk=${qid}&s=40" alt="Image A">
+<!-- 1. 先写img标签，保证DOM先被解析，src先留空 -->
+ <img id="imageA" src="" alt="Image A">
+ <!-- 2. script标签放在img标签的下方，保证执行时img已经存在 -->
+ <script>
+ // 1. 获取URL中?开头的完整查询字符串
+ const queryStr = window.location.search;
+ // 2. 实例化解析对象
+ const urlParams = new URLSearchParams(queryStr);
+ // 3. 获取指定qid参数
+ const qid = urlParams.get('qid');
+ // 4. 核心：在JS中用模板字符串拼接链接，动态设置给img的src
+ const imgDom = document.getElementById('imageA');
+ // 容错处理：有qid才赋值，避免请求出错
+ if (qid) {
+   imgDom.src = `https://q3.qlogo.cn/g?b=qq&nk=${qid}&s=40`;
+ } else {
+   console.warn('URL中未找到qid参数');
+   // 可选：设置一个默认图片地址
+   // imgDom.src = "默认图片链接";
+ }
+ </script>
 
     <script>
         // ========== 可自定义配置项 ==========
